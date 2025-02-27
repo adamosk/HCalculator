@@ -589,6 +589,49 @@ input:checked + .slider:before {
     font-size: 14px;
 }
 
+.settings-footer {
+    margin-top: 20px;
+    padding: 10px;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+    font-size: 12px;
+    color: var(--secondary-text-color);
+}
+
+#app-version {
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+#app-version:hover {
+    opacity: 1;
+}
+
+.dark-theme .settings-footer {
+    border-top-color: var(--dark-border-color);
+}
+
+/* Dark theme adjustments */
+.dark-theme {
+    --bg-color: #1e1e1e;
+    --btn-bg: #2d2d2d;
+    --btn-color: #ffffff;
+    --btn-hover: #3a3a3a;
+    --btn-active: #454545;
+    --operator-bg: #505050;
+    --operator-color: #ffffff;
+    --equals-bg: #0078d7;
+    --equals-hover: #0086f0;
+    --equals-active: #006cbb;
+    --display-bg: #121212;
+    --display-color: #ffffff;
+    --secondary-text-color: #cccccc;
+    --history-panel-bg: #252525;
+    --border-color: #383838;
+    --history-item-bg: #2a2a2a;
+    --settings-bg: #1e1e1e;
+}
+
 /* History Panel */
 .history-panel {
     width: 280px;

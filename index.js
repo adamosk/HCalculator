@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, screen } = require('electron');
 const path = require('path');
 const remoteMain = require('@electron/remote/main');
+const packageJson = require('./package.json');
 
 // Initialize @electron/remote
 remoteMain.initialize();
@@ -122,6 +123,13 @@ async function createWindow() {
   }
 }
 
+// Check for version flag
+const argv = process.argv.slice(2);
+if (argv.includes('--version') || argv.includes('-v')) {
+  console.log(`HCalculator v${packageJson.version}`);
+  app.exit(0);
+}
+
 // This method will be called when Electron has finished initialization
 app.whenReady().then(async () => {
   await createWindow();
@@ -209,4 +217,9 @@ ipcMain.handle('set-always-on-top', async (event, value) => {
     return value;
   }
   return false;
+});
+
+// Handler to get app version
+ipcMain.handle('get-app-version', () => {
+  return packageJson.version;
 }); 

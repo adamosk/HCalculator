@@ -84,6 +84,9 @@ class Calculator {
         
         // After loading preferences and binding events, initialize memory button states
         this.updateMemoryIndicator();
+        
+        // Initialize version display
+        this.initializeVersionDisplay();
     }
     
     // Load user preferences from storage
@@ -1217,6 +1220,33 @@ class Calculator {
             } catch (error) {
                 handleIpcError(error);
             }
+        }
+    }
+    
+    // Add this method for version display
+    async initializeVersionDisplay() {
+        try {
+            const versionElement = document.getElementById('app-version');
+            if (versionElement) {
+                // Get version from package.json via IPC
+                const appVersion = await ipcRenderer.invoke('get-app-version');
+                versionElement.textContent = `Version: ${appVersion}`;
+                
+                // Add click handler to copy version to clipboard
+                versionElement.title = 'Click to copy version';
+                versionElement.addEventListener('click', () => {
+                    navigator.clipboard.writeText(appVersion)
+                        .then(() => {
+                            const originalText = versionElement.textContent;
+                            versionElement.textContent = 'Copied!';
+                            setTimeout(() => {
+                                versionElement.textContent = originalText;
+                            }, 1500);
+                        });
+                });
+            }
+        } catch (error) {
+            console.error('Failed to initialize version display:', error);
         }
     }
 }
