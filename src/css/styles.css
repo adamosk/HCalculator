@@ -1,0 +1,955 @@
+/* Theme Variables */
+:root {
+    /* Light Theme (Default) */
+    --background-color: #f5f5f5;
+    --calculator-bg: #ffffff;
+    --display-bg: #f9f9f9;
+    --border-color: #eeeeee;
+    --button-bg: #ffffff;
+    --button-hover: #f8f8f8;
+    --button-active: #eeeeee;
+    --operator-bg: #f8f8f8;
+    --operator-color: #0078d7;
+    --function-color: #e91e63;
+    --equals-bg: #0078d7;
+    --equals-color: white;
+    --text-primary: #333;
+    --text-secondary: #555;
+    --text-tertiary: #777;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --history-panel-bg: #ffffff;
+    --history-item-hover: #f8f8f8;
+    --settings-text: #333;
+    --titlebar-bg: var(--display-bg);
+    --titlebar-text: var(--text-primary);
+    --titlebar-button-hover: rgba(0, 0, 0, 0.05);
+    --titlebar-close-hover: #e81123;
+    --titlebar-close-hover-text: #ffffff;
+    --error-color: #e74c3c;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+    --background-color: #121212;
+    --calculator-bg: #1e1e1e;
+    --display-bg: #252525;
+    --border-color: #333333;
+    --dark-border-color: #333333;
+    --button-bg: #2d2d2d;
+    --button-hover: #3a3a3a;
+    --button-active: #444444;
+    --operator-bg: #3a3a3a;
+    --operator-color: #4cc2ffad;
+    --function-color: #ff4081;
+    --equals-bg: #0078d7c4;
+    --equals-color: white;
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --text-tertiary: #909090;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --history-panel-bg: #1e1e1e;
+    --history-item-hover: #2a2a2a;
+    --settings-text: #e0e0e0;
+    --titlebar-bg: var(--display-bg);
+    --titlebar-text: var(--text-primary);
+    --titlebar-button-hover: rgba(255, 255, 255, 0.1);
+    --titlebar-close-hover: #e81123;
+    --titlebar-close-hover-text: #ffffff;
+    --error-color: #e74c3c;
+}
+
+/* Apply theme variables to elements */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Custom Titlebar */
+.custom-titlebar {
+    height: 40px;
+    background-color: var(--titlebar-bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    -webkit-app-region: drag; /* Make titlebar draggable */
+    user-select: none;
+    color: var(--titlebar-text);
+    border-bottom: none; /* Remove the border for a seamless look */
+    position: relative;
+    z-index: 30;
+    padding: 0 5px 0 10px;
+}
+
+.titlebar-left {
+    display: flex;
+    align-items: center;
+}
+
+.titlebar-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+}
+
+.titlebar-title {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.titlebar-controls {
+    display: flex;
+    height: 100%;
+}
+
+.titlebar-button {
+    -webkit-app-region: no-drag; /* Allow button clicks */
+    background: transparent;
+    border: none;
+    width: 46px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--titlebar-text);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.titlebar-button:hover {
+    background-color: var(--titlebar-button-hover);
+}
+
+.titlebar-button .material-icons,
+.titlebar-button .material-icons-outlined {
+    font-size: 18px;
+}
+
+/* Make settings icon more subtle */
+#settings-toggle .material-icons-outlined {
+    font-size: 17px;
+    opacity: 0.8;
+    font-weight: 100;
+    transition: opacity 0.2s ease;
+}
+
+#settings-toggle:hover .material-icons-outlined {
+    opacity: 1;
+}
+
+.titlebar-close:hover {
+    background-color: var(--titlebar-close-hover);
+    color: var(--titlebar-close-hover-text);
+}
+
+/* Remove focus outline from all buttons */
+button:focus {
+    outline: none;
+}
+
+/* Remove focus outlines from display elements */
+.main-display:focus, 
+.current-operation:focus, 
+.history-display:focus {
+    outline: none;
+}
+
+body {
+    background-color: var(--background-color);
+    display: flex;
+    flex-direction: column; /* Stack titlebar above calculator */
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+}
+
+/* Make the transition from titlebar to calculator seamless */
+.calculator-container {
+    display: flex;
+    flex: 1; /* Take remaining space */
+    position: relative;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    margin-top: -1px; /* Remove any gap between titlebar and container */
+}
+
+.calculator {
+    flex: 1;
+    background-color: var(--calculator-bg);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    max-width: 100%;
+    height: 100%;
+}
+
+.display {
+    background-color: var(--display-bg);
+    padding: 15px 20px 20px; /* Adjusted padding */
+    text-align: right;
+    flex: 0 0 auto;
+    border-bottom: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.history-display {
+    font-size: 14px;
+    color: var(--text-tertiary);
+    min-height: 20px;
+    margin-bottom: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.current-operation {
+    font-size: 16px;
+    color: var(--text-secondary);
+    min-height: 24px;
+    margin-bottom: 5px;
+}
+
+.main-display {
+    font-size: 40px;
+    font-weight: 300;
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.buttons {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+    flex: 1;
+}
+
+.btn {
+    flex: 1;
+    border: none;
+    font-size: 22px;
+    background-color: var(--button-bg);
+    transition: all 0.1s;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    outline: none;
+}
+
+.btn:hover {
+    background-color: var(--button-hover);
+}
+
+.btn:active {
+    background-color: var(--button-active);
+    transform: scale(0.97);
+}
+
+.number {
+    background-color: var(--button-bg);
+}
+
+.operator {
+    background-color: var(--operator-bg);
+    color: var(--operator-color);
+}
+
+.function {
+    background-color: var(--operator-bg);
+    color: var(--text-primary);
+    transition: color 0.2s ease;
+}
+
+.function:hover {
+    color: var(--function-color);
+}
+
+.equals {
+    background-color: var(--equals-bg);
+    color: var(--equals-color);
+}
+
+.equals:hover {
+    background-color: #006cc1;
+}
+
+.equals:active {
+    background-color: #005da8;
+}
+
+/* Memory Buttons Styles */
+.memory-row {
+    margin-bottom: -24px; /* Increase negative margin to eliminate the gap completely */
+    padding-bottom: 0;
+    border: none !important; /* Force no border with !important */
+    background: none !important;
+    z-index: 2; /* Ensure it sits above the main buttons */
+}
+
+/* Reset all borders on memory buttons */
+.memory,
+button.memory,
+.btn.memory,
+.memory[data-memory] {
+    border: 0 none transparent !important;
+    border-width: 0 !important;
+    border-style: none !important;
+    border-color: transparent !important;
+    border-image: none !important;
+    border-radius: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.memory {
+    background-color: transparent;
+    color: var(--operator-color);
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    height: 40px;
+    transition: all 0.2s ease;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Light theme override */
+[data-theme=""] .memory {
+    background-color: var(--button-bg) !important;
+}
+
+.memory:hover {
+    background-color: var(--button-hover) !important;
+}
+
+.memory:active {
+    transform: scale(0.98);
+    background-color: var(--button-active) !important;
+}
+
+/* Style for disabled memory buttons */
+.memory.disabled {
+    opacity: 0.5 !important;
+    cursor: default !important;
+    background-color: inherit !important; /* Keep the same background */
+}
+
+.memory.disabled:hover {
+    color: var(--operator-color) !important;
+    background-color: inherit !important;
+    transform: none !important;
+}
+
+.memory[data-memory="m-dropdown"] {
+    padding: 0 !important;
+}
+
+.memory[data-memory="m-dropdown"] .material-icons-outlined {
+    font-size: 20px;
+}
+
+/* Memory dropdown styles */
+.memory-dropdown {
+    position: fixed;
+    background-color: var(--calculator-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-shadow: 0 4px 12px var(--shadow-color);
+    z-index: 25; /* Lower z-index to stay below titlebar which is 30 */
+    display: none;
+    overflow-y: auto;
+    margin-top: 0; /* Remove margin since positioning is now handled in JS */
+    max-width: 100%; /* Ensure it doesn't overflow viewport width */
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.memory-dropdown.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.memory-dropdown-item {
+    padding: 12px 15px;
+    margin: 8px;
+    border: none;
+    border-radius: 8px;
+    background-color: rgba(128, 128, 128, 0.05);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.memory-dropdown-item:hover {
+    background-color: rgba(128, 128, 128, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.memory-dropdown-item:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.memory-dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.memory-dropdown-value {
+    font-weight: 500;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-primary);
+}
+
+/* Add a subtle highlight effect when hovering */
+.memory-dropdown-item:hover .memory-dropdown-value {
+    color: var(--function-color);
+}
+
+.memory-dropdown-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.memory-dropdown-action {
+    background: none;
+    border: none;
+    color: var(--operator-color);
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 2px;
+}
+
+.memory-dropdown-action:hover {
+    background-color: var(--button-hover);
+}
+
+.memory-dropdown-empty {
+    padding: 15px;
+    text-align: center;
+    color: var(--text-tertiary);
+}
+
+/* Memory indicator */
+.memory-indicator {
+    display: none;
+    position: absolute;
+    top: 12px;
+    left: 20px;
+    font-size: 14px;
+    color: var(--operator-color);
+    font-weight: bold;
+    opacity: 1; /* Full opacity for better visibility */
+    pointer-events: none; /* Don't intercept clicks */
+    z-index: 5; /* Ensure it appears above other content */
+}
+
+.memory-indicator.show {
+    display: block;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 18px;
+    z-index: 10;
+}
+
+/* Settings Panel */
+.settings-panel {
+    background-color: var(--calculator-bg);
+    position: absolute;
+    top: 40px; /* Position it below the titlebar instead of at the top */
+    left: 0;
+    width: 100%;
+    height: calc(100% - 40px); /* Adjust height to account for titlebar */
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(-100%); /* Hide it above instead of below */
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.settings-panel.show {
+    transform: translateY(0);
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.settings-header h2 {
+    color: var(--settings-text);
+    font-weight: 400;
+    font-size: 20px;
+}
+
+.settings-close {
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.settings-option {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-option h3 {
+    color: var(--settings-text);
+    margin-bottom: 10px;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.settings-control {
+    display: flex;
+    align-items: center;
+}
+
+.toggle-switch {
+    display: inline-block;
+    position: relative;
+    width: 50px;
+    height: 26px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .3s;
+    border-radius: 26px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--equals-bg);
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+.toggle-switch + span {
+    color: var(--settings-text);
+    margin-left: 12px;
+    font-size: 14px;
+}
+
+/* History Panel */
+.history-panel {
+    width: 280px;
+    background-color: var(--history-panel-bg);
+    border-left: 1px solid var(--border-color);
+    transform: translateX(280px);
+    transition: transform 0.3s ease;
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    box-shadow: -5px 0 10px rgba(0, 0, 0, 0.05);
+    z-index: 15;
+    /* Initially hidden but will be toggled by JavaScript */
+    visibility: hidden;
+    display: none;
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Custom Scrollbar Styling */
+.history-list::-webkit-scrollbar,
+.memory-dropdown::-webkit-scrollbar,
+.settings-panel::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.history-list::-webkit-scrollbar-track,
+.memory-dropdown::-webkit-scrollbar-track,
+.settings-panel::-webkit-scrollbar-track {
+    background-color: transparent;
+    border-radius: 10px;
+}
+
+.history-list::-webkit-scrollbar-thumb,
+.memory-dropdown::-webkit-scrollbar-thumb,
+.settings-panel::-webkit-scrollbar-thumb {
+    background-color: rgba(128, 128, 128, 0.3);
+    border-radius: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.history-list::-webkit-scrollbar-thumb:hover,
+.memory-dropdown::-webkit-scrollbar-thumb:hover,
+.settings-panel::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(128, 128, 128, 0.5);
+}
+
+/* Firefox scrollbar styling */
+.history-list,
+.memory-dropdown,
+.settings-panel {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(128, 128, 128, 0.3) transparent;
+}
+
+/* Dark theme scrollbar adjustments */
+[data-theme="dark"] .history-list::-webkit-scrollbar-thumb,
+[data-theme="dark"] .memory-dropdown::-webkit-scrollbar-thumb,
+[data-theme="dark"] .settings-panel::-webkit-scrollbar-thumb {
+    background-color: rgba(200, 200, 200, 0.2);
+}
+
+[data-theme="dark"] .history-list::-webkit-scrollbar-thumb:hover,
+[data-theme="dark"] .memory-dropdown::-webkit-scrollbar-thumb:hover,
+[data-theme="dark"] .settings-panel::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(200, 200, 200, 0.4);
+}
+
+[data-theme="dark"] .history-list,
+[data-theme="dark"] .memory-dropdown,
+[data-theme="dark"] .settings-panel {
+    scrollbar-color: rgba(200, 200, 200, 0.2) transparent;
+}
+
+.history-panel.show {
+    transform: translateX(0);
+    visibility: visible !important; /* Force visibility when show class is present */
+    display: block !important; /* Force display when show class is present */
+    opacity: 1;
+}
+
+/* Pinned History Panel */
+.history-panel.pinned {
+    position: relative;
+    transform: translateX(0);
+    right: auto;
+    min-width: 280px;
+    width: 300px;
+    max-width: 30%;
+    visibility: visible !important;
+    display: block !important;
+    opacity: 1;
+}
+
+.calculator-container.with-pinned-history {
+    width: 100%;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 18px;
+    background-color: var(--display-bg);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.history-header h3 {
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 16px;
+    margin: 0;
+    letter-spacing: 0.3px;
+}
+
+.history-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px; /* Add spacing between buttons */
+}
+
+.clear-history-btn, .pin-history-btn {
+    background-color: transparent;
+    border: none;
+    color: var(--operator-color);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    width: 30px;
+    height: 30px;
+}
+
+.clear-history-btn .material-icons, .pin-history-btn .material-icons {
+    font-size: 14px; /* Smaller icon size */
+}
+
+.clear-history-btn:hover, .pin-history-btn:hover {
+    background-color: rgba(128, 128, 128, 0.1);
+    transform: translateY(-1px);
+}
+
+/* Active state for pin button */
+.pin-history-btn.active {
+    background-color: var(--equals-bg);
+    color: var(--equals-color);
+}
+
+.pin-history-btn.active:hover {
+    background-color: #006cc1;
+    opacity: 0.95;
+    transform: translateY(-1px);
+}
+
+.history-list {
+    padding: 10px;
+    overflow-y: auto;
+    height: calc(100% - 56px);
+    color: var(--text-primary);
+}
+
+.history-item {
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    border: none;
+    border-radius: 8px;
+    background-color: rgba(128, 128, 128, 0.05);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.history-item:last-child {
+    margin-bottom: 0;
+}
+
+.history-item:hover {
+    background-color: rgba(128, 128, 128, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.history-item-actions {
+    position: absolute;
+    top: 24%;
+    right: 10px;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 5px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.history-item:hover .history-item-actions {
+    opacity: 1;
+}
+
+.history-item-action {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 16px;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.history-item-action:hover {
+    background-color: var(--button-hover);
+}
+
+.history-delete-action {
+    color: var(--error-color);
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .history-item {
+    background-color: rgba(255, 255, 255, 0.03);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .history-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.history-expression {
+    font-size: 14px;
+    color: var(--text-secondary);
+    word-break: break-all;
+    padding-right: 30px; /* Make room for the delete button */
+}
+
+.history-result {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text-primary);
+    word-break: break-all;
+    padding-right: 30px; /* Make room for the delete button */
+}
+
+.history-empty {
+    padding: 30px 20px;
+    text-align: center;
+    color: var(--text-tertiary);
+    font-size: 15px;
+    font-style: italic;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.history-empty::before {
+    content: "history_toggle_off";
+    font-family: 'Material Icons';
+    font-size: 36px;
+    margin-bottom: 15px;
+    opacity: 0.4;
+    color: var(--operator-color);
+}
+
+/* Add a subtle fade-in animation for history items */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.history-item {
+    animation: fadeIn 0.3s ease forwards;
+    /* Rest of the styles remain the same */
+}
+
+/* Stagger the animation slightly for each item */
+.history-item:nth-child(1) { animation-delay: 0.05s; }
+.history-item:nth-child(2) { animation-delay: 0.1s; }
+.history-item:nth-child(3) { animation-delay: 0.15s; }
+.history-item:nth-child(4) { animation-delay: 0.2s; }
+.history-item:nth-child(5) { animation-delay: 0.25s; }
+.history-item:nth-child(n+6) { animation-delay: 0.3s; }
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .calculator {
+        width: 100%;
+    }
+    
+    .calculator-container {
+        width: 100%;
+        height: 100vh;
+    }
+    
+    .history-panel {
+        width: 80%;
+    }
+    
+    .history-panel.pinned {
+        min-width: 200px;
+        width: 250px;
+    }
+}
+
+/* Function button specific styles */
+.function[data-action="toggle-history"] {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.function[data-action="toggle-history"].active {
+    background-color: var(--equals-bg);
+    color: var(--equals-color);
+}
+
+.function[data-action="toggle-history"]:hover:not(.active) {
+    color: var(--function-color);
+}
+
+.function[data-action="toggle-history"]:focus {
+    outline: none;
+    background-color: var(--button-hover);
+}
+
+/* Ensure the history button is always clickable */
+.function[data-action="toggle-history"] .material-icons {
+    pointer-events: none; /* Prevent icon from capturing clicks */
+}
+
+/* Remove right border from the last memory button (dropdown) */
+.memory:last-child {
+    border-right: none !important;
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .memory-dropdown-item {
+    background-color: rgba(255, 255, 255, 0.03);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .memory-dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+} 

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HCalculator</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <link rel="stylesheet" href="src/css/styles.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+</head>
+<body>
+    <!-- Custom Titlebar -->
+    <div class="custom-titlebar">
+        <div class="titlebar-left">
+            <img src="assets/hcalculator-logo.png" alt="HCalculator" class="titlebar-icon">
+            <span class="titlebar-title">HCalculator</span>
+        </div>
+        <div class="titlebar-controls">
+            <button id="settings-toggle" class="titlebar-button" title="Settings (S)">
+                <span class="material-icons-outlined">settings</span>
+            </button>
+            <button id="titlebar-minimize" class="titlebar-button" title="Minimize">
+                <span class="material-icons">remove</span>
+            </button>
+            <button id="titlebar-maximize" class="titlebar-button" title="Maximize">
+                <span class="material-icons">crop_square</span>
+            </button>
+            <button id="titlebar-close" class="titlebar-button titlebar-close" title="Close">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="calculator-container">
+        <!-- Calculator -->
+        <div class="calculator">
+            <div class="display">
+                <div id="history-display" class="history-display"></div>
+                <div id="current-operation" class="current-operation"></div>
+                <div id="main-display" class="main-display" tabindex="0">0</div>
+                <div id="memory-indicator" class="memory-indicator">M</div>
+            </div>
+            
+            <div class="buttons">
+                <!-- Memory Buttons Row -->
+                <div class="row memory-row">
+                    <button class="btn memory" data-memory="mc" title="Memory Clear (Alt+C)">MC</button>
+                    <button class="btn memory" data-memory="mr" title="Memory Recall (Alt+R)">MR</button>
+                    <button class="btn memory" data-memory="m-plus" title="Memory Add (Alt+P)">M+</button>
+                    <button class="btn memory" data-memory="m-minus" title="Memory Subtract (Alt+M)">M−</button>
+                    <button class="btn memory" data-memory="ms" title="Memory Store (Alt+S)">MS</button>
+                    <button class="btn memory" data-memory="m-dropdown" title="Memory List">
+                        <span class="material-icons">expand_more</span>
+                    </button>
+                </div>
+                <div class="row">
+                    <button class="btn function" data-action="clear">C</button>
+                    <button class="btn function" data-action="backspace">⌫</button>
+                    <button class="btn function" data-action="percentage">%</button>
+                    <button class="btn operator" data-operator="/">÷</button>
+                </div>
+                <div class="row">
+                    <button class="btn number" data-number="7">7</button>
+                    <button class="btn number" data-number="8">8</button>
+                    <button class="btn number" data-number="9">9</button>
+                    <button class="btn operator" data-operator="*">×</button>
+                </div>
+                <div class="row">
+                    <button class="btn number" data-number="4">4</button>
+                    <button class="btn number" data-number="5">5</button>
+                    <button class="btn number" data-number="6">6</button>
+                    <button class="btn operator" data-operator="-">−</button>
+                </div>
+                <div class="row">
+                    <button class="btn number" data-number="1">1</button>
+                    <button class="btn number" data-number="2">2</button>
+                    <button class="btn number" data-number="3">3</button>
+                    <button class="btn operator" data-operator="+">+</button>
+                </div>
+                <div class="row">
+                    <button class="btn function" data-action="toggle-history" title="History (H)">
+                        <span class="material-icons">history</span>
+                    </button>
+                    <button class="btn number" data-number="0">0</button>
+                    <button class="btn number" data-number=".">.</button>
+                    <button class="btn equals" data-action="calculate">=</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- History Panel -->
+        <div id="history-panel" class="history-panel">
+            <div class="history-header">
+                <h3>History</h3>
+                <div class="history-controls">
+                    <button id="pin-history" class="pin-history-btn" title="Pin History">
+                        <span class="material-icons-outlined">push_pin</span>
+                    </button>
+                    <button id="clear-history" class="clear-history-btn" title="Clear History">
+                        <span class="material-icons-outlined">delete</span>
+                    </button>
+                </div>
+            </div>
+            <div id="history-list" class="history-list"></div>
+        </div>
+    </div>
+    
+    <!-- Settings Panel -->
+    <div id="settings-panel" class="settings-panel">
+        <div class="settings-header">
+            <h2>Settings</h2>
+            <button id="settings-close" class="settings-close">×</button>
+        </div>
+        <div class="settings-option">
+            <h3>Theme</h3>
+            <div class="settings-control">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="theme-switch">
+                    <span class="slider"></span>
+                </label>
+                <span id="theme-label">Light</span>
+            </div>
+        </div>
+        <div class="settings-option">
+            <h3>Thousands Separator</h3>
+            <div class="settings-control">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="separator-switch" checked>
+                    <span class="slider"></span>
+                </label>
+                <span id="separator-label">On</span>
+            </div>
+        </div>
+        <div class="settings-option">
+            <h3>Keep on Top</h3>
+            <div class="settings-control">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="ontop-switch">
+                    <span class="slider"></span>
+                </label>
+                <span id="ontop-label">Off</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Memory Dropdown -->
+    <div id="memory-dropdown" class="memory-dropdown">
+        <!-- Memory items will be dynamically added here -->
+        <div class="memory-dropdown-empty">No items in memory</div>
+    </div>
+    
+    <script src="src/js/calculator.js"></script>
+</body>
+</html> 
