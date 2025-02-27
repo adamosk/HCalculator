@@ -466,6 +466,24 @@ class Calculator {
             event.preventDefault();
             this.showContextMenu();
         });
+        
+        // Add event listeners for about section links
+        const githubLink = document.getElementById('github-link');
+        const reportIssueLink = document.getElementById('report-issue-link');
+        
+        if (githubLink) {
+            githubLink.addEventListener('click', (event) => {
+                event.preventDefault();
+                this.openExternalLink('https://github.com/adamosk/HCalculator');
+            });
+        }
+        
+        if (reportIssueLink) {
+            reportIssueLink.addEventListener('click', (event) => {
+                event.preventDefault();
+                this.openExternalLink('https://github.com/adamosk/HCalculator/issues/new');
+            });
+        }
     }
     
     // Initialize titlebar controls
@@ -1247,6 +1265,15 @@ class Calculator {
             }
         } catch (error) {
             console.error('Failed to initialize version display:', error);
+        }
+    }
+    
+    // Add method to safely open external links
+    async openExternalLink(url) {
+        try {
+            await ipcRenderer.invoke('open-external-link', url);
+        } catch (error) {
+            console.error('Failed to open external link:', error);
         }
     }
 }

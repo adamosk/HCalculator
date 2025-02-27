@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, screen } = require('electron');
+const { app, BrowserWindow, ipcMain, screen, shell } = require('electron');
 const path = require('path');
 const remoteMain = require('@electron/remote/main');
 const packageJson = require('./package.json');
@@ -222,4 +222,13 @@ ipcMain.handle('set-always-on-top', async (event, value) => {
 // Handler to get app version
 ipcMain.handle('get-app-version', () => {
   return packageJson.version;
+});
+
+// Handler to open external links
+ipcMain.handle('open-external-link', async (event, url) => {
+  if (url && (url.startsWith('https://') || url.startsWith('http://'))) {
+    await shell.openExternal(url);
+    return true;
+  }
+  return false;
 }); 
