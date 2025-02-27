@@ -1,15 +1,19 @@
 {
   "name": "hcalculator",
-  "version": "1.0.0",
+  "version": "1.0.7",
   "description": "A modern calculator app with persistent history built with Electron",
   "main": "index.js",
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
+    "download-fonts": "node download-fonts.js",
+    "prebuild": "npm run download-fonts",
     "build": "electron-builder",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "dist-win": "electron-builder --win --x64",
+    "build-win-icon": "electron-builder --win --x64 --config.win.icon=assets/hcalculator-logo.ico",
+    "new-build": "electron-builder --win --x64 --config.buildVersion=1.0.1",
     "version:patch": "npm version patch --no-git-tag-version",
     "version:minor": "npm version minor --no-git-tag-version",
     "version:major": "npm version major --no-git-tag-version",
@@ -26,7 +30,9 @@
   "devDependencies": {
     "electron": "^29.0.1",
     "electron-builder": "^24.9.1",
-    "electron-store": "^10.0.1"
+    "jimp": "^1.6.0",
+    "png-to-ico": "^2.1.8",
+    "sharp": "^0.33.5"
   },
   "build": {
     "appId": "com.adam.hcalculator",
@@ -36,6 +42,7 @@
     },
     "files": [
       "**/*",
+      "assets/fonts/*.woff2",
       "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
       "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
       "!**/node_modules/*.d.ts",
@@ -52,13 +59,18 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
-      ]
+      ],
+      "icon": "C:/Users/Adamos/source/repos/HCalculator/assets/calculator-icon-new.ico"
     },
     "nsis": {
       "oneClick": false,
@@ -72,6 +84,7 @@
     }
   },
   "dependencies": {
-    "@electron/remote": "^2.1.2"
+    "@electron/remote": "^2.1.2",
+    "electron-store": "^8.1.0"
   }
 }

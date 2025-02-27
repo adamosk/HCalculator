@@ -6,8 +6,28 @@
     <title>HCalculator</title>
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
     <link rel="stylesheet" href="src/css/styles.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="src/css/material-icons.css">
+    <style>
+        /* Fallback styles in case the font fails to load */
+        .material-icons-fallback, .material-icons-outlined-fallback {
+            display: none;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            font-size: 16px;
+        }
+        /* Only show fallbacks if the font fails to load */
+        .material-icons-unavailable .material-icons-fallback,
+        .material-icons-unavailable .material-icons-outlined-fallback {
+            display: inline-block;
+        }
+        .material-icons-unavailable .material-icons,
+        .material-icons-unavailable .material-icons-outlined {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <!-- Custom Titlebar -->
@@ -19,15 +39,19 @@
         <div class="titlebar-controls">
             <button id="settings-toggle" class="titlebar-button" title="Settings (S)">
                 <span class="material-icons-outlined">settings</span>
+                <span class="material-icons-outlined-fallback">⚙️</span>
             </button>
             <button id="titlebar-minimize" class="titlebar-button" title="Minimize">
                 <span class="material-icons">remove</span>
+                <span class="material-icons-fallback">−</span>
             </button>
             <button id="titlebar-maximize" class="titlebar-button" title="Maximize">
                 <span class="material-icons">crop_square</span>
+                <span class="material-icons-fallback">□</span>
             </button>
             <button id="titlebar-close" class="titlebar-button titlebar-close" title="Close">
                 <span class="material-icons">close</span>
+                <span class="material-icons-fallback">×</span>
             </button>
         </div>
     </div>
@@ -52,6 +76,7 @@
                     <button class="btn memory" data-memory="ms" title="Memory Store (Alt+S)">MS</button>
                     <button class="btn memory" data-memory="m-dropdown" title="Memory List">
                         <span class="material-icons">expand_more</span>
+                        <span class="material-icons-fallback">▼</span>
                     </button>
                 </div>
                 <div class="row">
@@ -81,6 +106,7 @@
                 <div class="row">
                     <button class="btn function" data-action="toggle-history" title="History (H)">
                         <span class="material-icons">history</span>
+                        <span class="material-icons-fallback">↺</span>
                     </button>
                     <button class="btn number" data-number="0">0</button>
                     <button class="btn number" data-number=".">.</button>
@@ -96,9 +122,11 @@
                 <div class="history-controls">
                     <button id="pin-history" class="pin-history-btn" title="Pin History">
                         <span class="material-icons-outlined">push_pin</span>
+                        <span class="material-icons-outlined-fallback">📌</span>
                     </button>
                     <button id="clear-history" class="clear-history-btn" title="Clear History">
                         <span class="material-icons-outlined">delete</span>
+                        <span class="material-icons-outlined-fallback">🗑️</span>
                     </button>
                 </div>
             </div>
@@ -152,7 +180,7 @@
                     A modern calculator app with persistent history built with Electron.
                 </p>
                 <p class="about-copyright">
-                    &copy; 2024 Adam
+                    &copy; 2025 Adamos J. Karayiannis
                 </p>
                 <div class="about-links">
                     <a href="#" id="github-link" class="about-link">GitHub</a>
@@ -173,5 +201,16 @@
     </div>
     
     <script src="src/js/calculator.js"></script>
+    <script>
+        // Check if Material Icons font loaded successfully
+        document.fonts.ready.then(() => {
+            // Check if the Material Icons font is available
+            if (!document.fonts.check('1em "Material Icons"')) {
+                // If not available, add a class to use fallbacks
+                document.body.classList.add('material-icons-unavailable');
+                console.warn('Material Icons font not available, using fallbacks');
+            }
+        });
+    </script>
 </body>
 </html> 
